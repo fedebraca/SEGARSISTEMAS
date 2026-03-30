@@ -1,0 +1,8 @@
+[21-Nov-2025 19:18:34 America/Boise] PHP Fatal error:  Uncaught Error: Class 'Illuminate\Support\ServiceProvider' not found in /home2/segarsis/public_html/app/Providers/AppServiceProvider.php:7
+Stack trace:
+#0 {main}
+  thrown in /home2/segarsis/public_html/app/Providers/AppServiceProvider.php on line 7
+[21-Nov-2025 19:18:34 America/Boise] PHP Fatal error:  Uncaught Error: Class 'Illuminate\Foundation\Support\Providers\AuthServiceProvider' not found in /home2/segarsis/public_html/app/Providers/AuthServiceProvider.php:8
+Stack trace:
+#0 {main}
+  thrown in /home2/segarsis/public_html/app/Providers/AuthServiceProvider.php on line 8
