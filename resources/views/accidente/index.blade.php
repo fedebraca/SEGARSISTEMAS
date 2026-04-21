@@ -9,6 +9,7 @@
 @section('css')
     <link rel="stylesheet" href="{{ asset('js/dropzone/dist/min/dropzone.min.css')  }}">
     <link rel="stylesheet" href="{{ asset('js/jstree/dist/themes/default/style.min.css')  }}">
+    <style>.requerido { color: #db2828; margin-left: 2px; }</style>
 @stop
 @section('cont')
     <div class="viewCont" v-cloak>
@@ -35,7 +36,7 @@
                         <input type="text" name="num_siniestro" v-model="d.num_siniestro">
                     </div>
                     <div class="field">
-                        <label>Cliente</label>
+                        <label>Cliente <span class="requerido">*</span></label>
                         <div class="ui ui search selection dropdown" v-select="d.cliente_id" :class="loading:cargaListas">
                             <input type="hidden" name="cliente_id">
                             <i class="dropdown icon"></i>
@@ -83,7 +84,7 @@
                         <input type="text" name="" v-model="d.descripcion">
                     </div>
                     <div class="field">
-                        <label>Fecha Accidente</label>
+                        <label>Fecha Accidente <span class="requerido">*</span></label>
                         <input type="date" name="" v-model="d.f_accidente" placeholder="dd/mm/aaaa">
                     </div>
                     <div class="field">
@@ -93,7 +94,7 @@
                 </div>
                 <div class="fields">
                     <div class="field">
-                        <label>Lugar</label>
+                        <label>Lugar <span class="requerido">*</span></label>
                         <input type="text" name="lugar" v-model="d.lugar">
                     </div>
                     <div class="field">
@@ -295,7 +296,9 @@
                 <form class="dropzone ui form" id="dropzone" role="form" method="POST">{!! csrf_field() !!}</form>
             </div>
             <div v-show="oper == 'edit'">
-                Archivo: <a href="{{ asset('adjuntos') }}/<% d.archivo %>"><% d.archivo %></a>
+                <div v-if="d.archivo">Archivo 1: <a href="{{ asset('adjuntos') }}/<% d.archivo %>" target="_blank"><% d.archivo %></a></div>
+                <div v-if="d.archivo2">Archivo 2: <a href="{{ asset('adjuntos') }}/<% d.archivo2 %>" target="_blank"><% d.archivo2 %></a></div>
+                <div v-if="d.archivo3">Archivo 3: <a href="{{ asset('adjuntos') }}/<% d.archivo3 %>" target="_blank"><% d.archivo3 %></a></div>
             </div>
             <br>
             <button v-if="oper == 'add'" type="button" class="ui icon button green labeled" v-on:click="agregar()"><i class="icon plus"></i> Agregar</button>
@@ -443,6 +446,8 @@
                         cumplido: '',
                         alerta_seg: '',
                         archivo: '',
+                        archivo2: '',
+                        archivo3: '',
                         cau_inm_tipo_id: '',
                         cau_basica_factor_id: '',
                         cau_basica_tipo_id: ''
@@ -476,10 +481,13 @@
                     this.drop = new Dropzone("form#dropzone", {
                         url: url,
                         uploadMultiple: true,
+                        parallelUploads: 3,
                         autoProcessQueue: false,
                         addRemoveLinks: true,
                         createImageThumbnails: true,
-                        dictDefaultMessage: 'Haga click aqui o arrastre un archivo para subir'
+                        maxFiles: 3,
+                        dictDefaultMessage: 'Haga click aquí o arrastre hasta 3 archivos para subir',
+                        dictRemoveFile: 'Borrar archivo'
                     });
                     this.getConfig();
                 },
@@ -552,6 +560,18 @@
                     },
                     agregar: function () {
                         var self = this;
+                        if (!self.d.cliente_id) {
+                            mensaje({tipo: 2, txt: 'El campo Cliente es requerido'});
+                            return;
+                        }
+                        if (!self.d.f_accidente) {
+                            mensaje({tipo: 2, txt: 'El campo Fecha Accidente es requerido'});
+                            return;
+                        }
+                        if (!self.d.lugar) {
+                            mensaje({tipo: 2, txt: 'El campo Lugar es requerido'});
+                            return;
+                        }
                         var archivos = self.drop.getQueuedFiles();
                         self.cargaGuardar = true;
                         if (archivos.length > 0) {
@@ -579,6 +599,18 @@
                     },
                     guardar: function () {
                         var self = this;
+                        if (!self.d.cliente_id) {
+                            mensaje({tipo: 2, txt: 'El campo Cliente es requerido'});
+                            return;
+                        }
+                        if (!self.d.f_accidente) {
+                            mensaje({tipo: 2, txt: 'El campo Fecha Accidente es requerido'});
+                            return;
+                        }
+                        if (!self.d.lugar) {
+                            mensaje({tipo: 2, txt: 'El campo Lugar es requerido'});
+                            return;
+                        }
                         var archivos = self.drop.getQueuedFiles();
                         self.cargaGuardar = true;
                         if (archivos.length > 0) {

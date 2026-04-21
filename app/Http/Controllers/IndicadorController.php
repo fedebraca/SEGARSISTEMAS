@@ -151,7 +151,7 @@ class IndicadorController extends Controller
             ->map(function ($item, $key) {
                 return [
                     'name' => $item->desig,
-                    'y'    => $item->total
+                    'y'    => intval($item->total)
                 ];
             });
         ///////////////// grafico de torta 2 accidentes por tipo
@@ -174,7 +174,7 @@ class IndicadorController extends Controller
             ->map(function ($item, $key) {
                 return [
                     'name' => $item->desig,
-                    'y'    => $item->total
+                    'y'    => intval($item->total)
                 ];
             });
         ///////////////// grafico de torta 3 accidentes por factor de causa basica
@@ -197,7 +197,7 @@ class IndicadorController extends Controller
             ->map(function ($item, $key) {
                 return [
                     'name' => $item->desig,
-                    'y'    => $item->total
+                    'y'    => intval($item->total)
                 ];
             });
         ///////////////// grafico de torta 5 accidentes por cliente
@@ -215,7 +215,7 @@ class IndicadorController extends Controller
             ->map(function ($item, $key) {
                 return [
                     'name' => $item->rzon_soc,
-                    'y'    => $item->total
+                    'y'    => intval($item->total)
                 ];
             });
         ///////////////// grafico de torta 6 accidentes por equipo
@@ -234,7 +234,7 @@ class IndicadorController extends Controller
             ->map(function ($item, $key) {
                 return [
                     'name' => $item->desig,
-                    'y'    => $item->total
+                    'y'    => intval($item->total)
                 ];
             });
 
@@ -414,7 +414,7 @@ class IndicadorController extends Controller
                 $valor = $this->indices($tipo, $item->id, $desdeMes, $desdeAno, $hastaMes, $hastaAno, $desde, $hasta);
                 return [
                     'name' => $item->desig,
-                    'y'    => $valor[$grafico]
+                    'y'    => floatval($valor[$grafico])
                 ];
             });
 
@@ -439,7 +439,7 @@ class IndicadorController extends Controller
             ->map(function ($item, $key) {
                 return [
                     'name' => $item->mes . '-' . $item->ano,
-                    'y'    => $item->cant
+                    'y'    => intval($item->cant)
                 ];
             });
     }
