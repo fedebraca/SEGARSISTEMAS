@@ -31,18 +31,19 @@ class AccidenteController extends Controller
     {
         $upload_success = true;
         $datos = $request->except(['file', 'empresa', 'tipo', 'causa_inm', 'causa_basica', 'causa_basica_factor', 'causa_basica_tipo', 'equipo']);
-        $archNom = '';
+        $archNoms = ['', '', ''];
         if ($request->hasFile('file')) {
             $archivos = $request->file('file');
-            foreach ($archivos as $archivo) {
-                $archNom = $archivo->getClientOriginalName();
-                $upload_success = $archivo->move(base_path() . '/public/adjuntos/', $archNom);
+            foreach ($archivos as $i => $archivo) {
+                if ($i >= 3) break;
+                $archNoms[$i] = $archivo->getClientOriginalName();
+                $upload_success = $archivo->move(base_path() . '/public/adjuntos/', $archNoms[$i]);
             }
         }
         if ($upload_success) {
-            $datos['f_accidente'] = Tool::fConvert($datos['f_accidente'], 'd/m/Y', 'Y-m-d');
-            $datos['f_alta'] = Tool::fConvert($datos['f_alta'], 'd/m/Y', 'Y-m-d');
-            $datos['archivo'] = $archNom;
+            $datos['archivo'] = $archNoms[0];
+            $datos['archivo2'] = $archNoms[1];
+            $datos['archivo3'] = $archNoms[2];
             $acc = Accidente::create($datos);
             if ($acc->save()) {
                 return response()->json(['txt' => 'Registro agregado', 'tipo' => 1]);
@@ -67,16 +68,20 @@ class AccidenteController extends Controller
         $datos = $request->except(['file', 'empresa', 'cliente', '_token',
             'tipo', 'causa_inm', 'causa_basica', 'causa_basica_factor',
             'causa_basica_tipo', 'equipo', 'causa_inm_tipo']);
+        $archNoms = ['', '', ''];
         if ($request->hasFile('file')) {
             $archivos = $request->file('file');
-            foreach ($archivos as $archivo) {
-                $archNom = $archivo->getClientOriginalName();
-                $upload_success = $archivo->move(base_path() . '/public/adjuntos/', $archNom);
+            foreach ($archivos as $i => $archivo) {
+                if ($i >= 3) break;
+                $archNoms[$i] = $archivo->getClientOriginalName();
+                $upload_success = $archivo->move(base_path() . '/public/adjuntos/', $archNoms[$i]);
             }
         }
 
         if ($upload_success) {
-            $datos['archivo'] = $archNom;
+            $datos['archivo'] = $archNoms[0];
+            $datos['archivo2'] = $archNoms[1];
+            $datos['archivo3'] = $archNoms[2];
         }
 
         $acc = Accidente::where('id', $datos['id'])->update($datos);
@@ -147,11 +152,15 @@ class AccidenteController extends Controller
             'cumpl_3'           => ['tit' => 'Cumpl 3', 'tipo' => 'sel', 'campo' => 'cumpl_3', 'align' => 'center', 'op' => $cumpl],
             'cumplido'          => ['tit' => 'Cumplido', 'tipo' => 'texto', 'campo' => 'cumplido', 'align' => 'center', 'op' => $sino],
             'alerta_seg'        => ['tit' => 'Alerta', 'tipo' => 'sel', 'campo' => 'alerta_seg', 'align' => 'center', 'op' => $sino],
-            'archivo'           => ['tit' => 'Archivo', 'tipo' => 'archivo', 'campo' => 'archivo', 'align' => 'center']
+            'archivo'           => ['tit' => 'Archivo 1', 'tipo' => 'archivo', 'campo' => 'archivo', 'align' => 'center'],
+            'archivo2'          => ['tit' => 'Archivo 2', 'tipo' => 'archivo', 'campo' => 'archivo2', 'align' => 'center'],
+            'archivo3'          => ['tit' => 'Archivo 3', 'tipo' => 'archivo', 'campo' => 'archivo3', 'align' => 'center']
         ];
 
         if (Gate::denies('accidente-descarga')) {
             unset($cols['archivo']);
+            unset($cols['archivo2']);
+            unset($cols['archivo3']);
         }
 
         $q = Accidente::select('cliente_id', 'accidente.id', 'incidente_id',
@@ -180,6 +189,8 @@ class AccidenteController extends Controller
             'cumplido',
             'alerta_seg',
             'archivo',
+            'archivo2',
+            'archivo3',
             'equipo_id'
         )
             ->leftJoin('empresa', 'empresa_id', '=', 'empresa.id')
